@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Synonym Decoder Test!</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/compromise@latest/builds/compromise.min.js"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* --- Base Styles & CSS Variables --- */
+        :root {
+            /* Default Theme (Scholarly Blue/Orange) */
+            --bg-color: #EBF8FF; /* blue-50 */
+            --main-container-bg: #ffffff;
+            --main-container-border: #DD6B20; /* orange-600 */
+            --main-container-shadow: #DD6B20;
+            --card-bg: #FFF5EB; /* orange-50 */
+            --card-border: #FBD38D; /* orange-300 */
+            --card-shadow: #F6AD55; /* orange-400 */
+            --input-bg: #ffffff;
+            --input-border: #FBD38D; /* orange-300 */
+            --input-text: #2D3748; /* gray-800 */
+            --input-focus-ring: #4299E1; /* blue-500 */
+            --action-button-text: white;
+            --action-button-border: #C05621; /* orange-700 */
+            --action-button-shadow: #C05621;
+            --action-button-hover-shadow: #9C4221; /* orange-800 */
+            --action-button-active-shadow: #C05621;
+            --submit-button-bg: #4299E1; /* blue-500 */
+            --submit-button-hover-bg: #3182CE; /* blue-600 */
+            --submit-button-active-bg: #2B6CB0; /* blue-700 */
+            --next-button-bg: #48BB78; /* green-500 */
+            --next-button-hover-bg: #38A169; /* green-600 */
+            --next-button-active-bg: #2F855A; /* green-700 */
+            --reset-button-bg: #F56565; /* red-500 */
+            --reset-button-hover-bg: #E53E3E; /* red-600 */
+            --reset-button-active-bg: #C53030; /* red-700 */
+            --result-area-bg: #FFF5EB; /* orange-50 */
+            --result-area-border: #FBD38D; /* orange-300 */
+            --result-area-shadow: #F6AD55; /* orange-400 */
+            --result-text-color: #9C4221; /* orange-800 */
+            --explanation-text-color: #AE571A; /* orange-700 */
+            --correct-text-color: #2F855A; /* green-700 */
+            --incorrect-text-color: #C53030; /* red-700 */
+            --thinking-text-color: #DD6B20; /* orange-600 */
+            --heading-color: #2C5282; /* blue-800 */
+            --subheading-color: #DD6B20; /* orange-600 */
+            --puzzle-text-color: #2D3748; /* gray-800 */
+            --highlight-color: #DD6B20; /* orange-600 */
+            --label-color: #2C5282;
+            --footer-text-color: #718096; /* gray-600 */
+            --focus-ring-color: var(--submit-button-bg);
+            --theme-selector-bg: #FFF5EB;
+            --theme-selector-border: #FBD38D;
+            --theme-selector-text: #DD6B20;
+        }
+
+        /* --- Theme Definitions --- */
+        body[data-theme="ocean-blue"] { --bg-color: #E0F2FE; --main-container-bg: #ffffff; --main-container-border: #075985; --main-container-shadow: #075985; --card-bg: #CFFAFE; --card-border: #67E8F9; --card-shadow: #22D3EE; --input-bg: #FFF; --input-border: #67E8F9; --input-text: #083344; --input-focus-ring: #38BDF8; --action-button-border: #075985; --action-button-shadow: #075985; --action-button-hover-shadow: #075985; --action-button-active-shadow: #075985; --submit-button-bg: #38BDF8; --submit-button-hover-bg: #0EA5E9; --submit-button-active-bg: #0284C7; --next-button-bg: #2DD4BF; --next-button-hover-bg: #14B8A6; --next-button-active-bg: #0D9488; --reset-button-bg: #FB7185; --reset-button-hover-bg: #F43F5E; --reset-button-active-bg: #E11D48; --result-area-bg: #A5F3FC; --result-area-border: #67E8F9; --result-area-shadow: #22D3EE; --result-text-color: #164E63; --explanation-text-color: #0E7490; --correct-text-color: #059669; --incorrect-text-color: #E11D48; --thinking-text-color: #155E75; --heading-color: #0C4A6E; --subheading-color: #155E75; --puzzle-text-color: #083344; --highlight-color: #0EA5E9; --label-color: #155E75; --footer-text-color: #0369A1; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #A5F3FC; --theme-selector-border: #67E8F9; --theme-selector-text: #155E75; }
+        body[data-theme="forest-green"] { --bg-color: #F0FFF4; --main-container-bg: #ffffff; --main-container-border: #2F855A; --main-container-shadow: #2F855A; --card-bg: #FEFCBF; --card-border: #F6E05E; --card-shadow: #ECC94B; --input-bg: #FFF; --input-border: #F6E05E; --input-text: #744210; --input-focus-ring: #A3E635; --action-button-border: #276749; --action-button-shadow: #276749; --action-button-hover-shadow: #22543D; --action-button-active-shadow: #276749; --submit-button-bg: #A3E635; --submit-button-hover-bg: #84CC16; --submit-button-active-bg: #65A30D; --next-button-bg: #4ADE80; --next-button-hover-bg: #22C55E; --next-button-active-bg: #16A34A; --reset-button-bg: #F56565; --reset-button-hover-bg: #E53E3E; --reset-button-active-bg: #C53030; --result-area-bg: #A7F3D0; --result-area-border: #6EE7B7; --result-area-shadow: #34D399; --result-text-color: #047857; --explanation-text-color: #064E3B; --correct-text-color: #16A34A; --incorrect-text-color: #C53030; --thinking-text-color: #065F46; --heading-color: #2F855A; --subheading-color: #276749; --puzzle-text-color: #064E3B; --highlight-color: #84CC16; --label-color: #276749; --footer-text-color: #718096; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #FEFCBF; --theme-selector-border: #F6E05E; --theme-selector-text: #B7791F; }
+        body[data-theme="cosmic-purple"] { --bg-color: #FAF5FF; --main-container-bg: #1E1B4B; --main-container-border: #A78BFA; --main-container-shadow: #A78BFA; --card-bg: #3730A3; --card-border: #C4B5FD; --card-shadow: #A78BFA; --input-bg: #4338CA; --input-border: #A78BFA; --input-text: #EEF2FF; --input-focus-ring: #F472B6; --action-button-text: #1E1B4B; --action-button-border: #A78BFA; --action-button-shadow: #A78BFA; --action-button-hover-shadow: #A78BFA; --action-button-active-shadow: #A78BFA; --submit-button-bg: #F472B6; --submit-button-hover-bg: #EC4899; --submit-button-active-bg: #DB2777; --next-button-bg: #A78BFA; --next-button-hover-bg: #8B5CF6; --next-button-active-bg: #7C3AED; --reset-button-bg: #F87171; --reset-button-hover-bg: #EF4444; --reset-button-active-bg: #DC2626; --result-area-bg: #4338CA; --result-area-border: #A78BFA; --result-area-shadow: #A78BFA; --result-text-color: #C4B5FD; --explanation-text-color: #DDD6FE; --correct-text-color: #A7F3D0; --incorrect-text-color: #FCA5A5; --thinking-text-color: #A78BFA; --heading-color: #EDE9FE; --subheading-color: #C4B5FD; --puzzle-text-color: #EDE9FE; --highlight-color: #F472B6; --label-color: #C4B5FD; --footer-text-color: #A78BFA; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #4338CA; --theme-selector-border: #A78BFA; --theme-selector-text: #EEF2FF; }
+        body[data-theme="sunny-yellow"] { --bg-color: #FEF9C3; --main-container-bg: #ffffff; --main-container-border: #CA8A04; --main-container-shadow: #CA8A04; --card-bg: #FEF08A; --card-border: #FACC15; --card-shadow: #EAB308; --input-bg: #FFF; --input-border: #FACC15; --input-text: #78350F; --input-focus-ring: #FB923C; --action-button-border: #CA8A04; --action-button-shadow: #CA8A04; --action-button-hover-shadow: #CA8A04; --action-button-active-shadow: #CA8A04; --submit-button-bg: #FB923C; --submit-button-hover-bg: #F97316; --submit-button-active-bg: #EA580C; --next-button-bg: #FACC15; --next-button-hover-bg: #EAB308; --next-button-active-bg: #CA8A04; --reset-button-bg: #F87171; --reset-button-hover-bg: #EF4444; --reset-button-active-bg: #DC2626; --result-area-bg: #FEF3C7; --result-area-border: #FDE047; --result-area-shadow: #EAB308; --result-text-color: #854D0E; --explanation-text-color: #713F12; --correct-text-color: #16A34A; --incorrect-text-color: #DC2626; --thinking-text-color: #A16207; --heading-color: #B45309; --subheading-color: #A16207; --puzzle-text-color: #78350F; --highlight-color: #F97316; --label-color: #A16207; --footer-text-color: #B45309; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #FEF3C7; --theme-selector-border: #FDE047; --theme-selector-text: #854D0E; }
+        body[data-theme="candy-pink"] { --bg-color: #FDF2F8; --main-container-bg: #ffffff; --main-container-border: #9D174D; --main-container-shadow: #9D174D; --card-bg: #FCE7F3; --card-border: #F9A8D4; --card-shadow: #F472B6; --input-bg: #FFF; --input-border: #F9A8D4; --input-text: #831843; --input-focus-ring: #A78BFA; --action-button-border: #9D174D; --action-button-shadow: #9D174D; --action-button-hover-shadow: #9D174D; --action-button-active-shadow: #9D174D; --submit-button-bg: #A78BFA; --submit-button-hover-bg: #8B5CF6; --submit-button-active-bg: #7C3AED; --next-button-bg: #F472B6; --next-button-hover-bg: #EC4899; --next-button-active-bg: #DB2777; --reset-button-bg: #FB7185; --reset-button-hover-bg: #F43F5E; --reset-button-active-bg: #E11D48; --result-area-bg: #FBCFE8; --result-area-border: #F9A8D4; --result-area-shadow: #F472B6; --result-text-color: #9D174D; --explanation-text-color: #831843; --correct-text-color: #059669; --incorrect-text-color: #E11D48; --thinking-text-color: #BE185D; --heading-color: #831843; --subheading-color: #BE185D; --puzzle-text-color: #831843; --highlight-color: #EC4899; --label-color: #BE185D; --footer-text-color: #9D174D; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #FBCFE8; --theme-selector-border: #F9A8D4; --theme-selector-text: #9D174D; }
+        body[data-theme="night-mode"] { --bg-color: #111827; --main-container-bg: #1F2937; --main-container-border: #6B7280; --main-container-shadow: #9CA3AF; --card-bg: #374151; --card-border: #9CA3AF; --card-shadow: #D1D5DB; --input-bg: #4B5563; --input-border: #9CA3AF; --input-text: #F9FAFB; --input-focus-ring: #60A5FA; --action-button-text: #111827; --action-button-border: #9CA3AF; --action-button-shadow: #9CA3AF; --action-button-hover-shadow: #D1D5DB; --action-button-active-shadow: #6B7280; --submit-button-bg: #60A5FA; --submit-button-hover-bg: #3B82F6; --submit-button-active-bg: #2563EB; --next-button-bg: #34D399; --next-button-hover-bg: #10B981; --next-button-active-bg: #059669; --reset-button-bg: #F87171; --reset-button-hover-bg: #EF4444; --reset-button-active-bg: #DC2626; --result-area-bg: #4B5563; --result-area-border: #9CA3AF; --result-area-shadow: #D1D5DB; --result-text-color: #ECFDF5; --explanation-text-color: #E5E7EB; --correct-text-color: #6EE7B7; --incorrect-text-color: #FCA5A5; --thinking-text-color: #D1D5DB; --heading-color: #F9FAFB; --subheading-color: #E5E7EB; --puzzle-text-color: #F3F4F6; --highlight-color: #60A5FA; --label-color: #E5E7EB; --footer-text-color: #9CA3AF; --focus-ring-color: var(--submit-button-bg); --theme-selector-bg: #4B5563; --theme-selector-border: #9CA3AF; --theme-selector-text: #F9FAFB; }
+
+        /* --- General Styles --- */
+        html, body { height: 100%; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            margin: 0;
+            padding-top: 5rem; /* Space for theme selector */
+            position: relative;
+            transition: background-color 0.3s ease;
+            overflow-x: hidden;
+        }
+        main { flex-grow: 1; display: flex; flex-direction: column; align-items: center; }
+
+        .main-container {
+            background-color: var(--main-container-bg);
+            border: 3px solid var(--main-container-border);
+            border-radius: 20px;
+            box-shadow: 8px 8px 0px var(--main-container-shadow);
+            width: 100%;
+            max-width: 48rem; /* Moderate width */
+            margin: 2rem auto 1rem auto; /* Default margin */
+            padding: 1.5rem sm:p-8;
+            text-align: center;
+            flex-shrink: 0;
+            transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Card Styling */
+        .puzzle-card {
+            background-color: var(--card-bg);
+            border: 2px solid var(--card-border);
+            border-radius: 16px;
+            box-shadow: 4px 4px 0px var(--card-shadow);
+            padding: 1.5rem;
+            margin-top: 1.5rem;
+            margin-bottom: 2rem;
+            transition: all 0.3s ease;
+        }
+
+        /* Puzzle Text & Highlight */
+        #puzzleSentence {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--puzzle-text-color);
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+        #puzzleSentence .highlight {
+            font-weight: 700;
+            color: var(--highlight-color);
+            background-color: color-mix(in srgb, var(--highlight-color) 15%, transparent); /* Subtle highlight */
+            padding: 0.1em 0.3em;
+            border-radius: 4px;
+            font-style: italic;
+        }
+
+
+        /* Input Styling */
+        #answerInput {
+            width: 100%;
+            max-width: 300px;
+            margin: 0 auto;
+            padding: 0.75rem 1rem;
+            border: 2px solid var(--input-border);
+            border-radius: 8px;
+            font-size: 1rem;
+            background-color: var(--input-bg);
+            color: var(--input-text);
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.06);
+            transition: border-color 0.2s ease, box-shadow 0.2s ease;
+        }
+        #answerInput:focus {
+            outline: none;
+            border-color: var(--input-focus-ring);
+            box-shadow: inset 2px 2px 4px rgba(0,0,0,0.06), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--input-focus-ring);
+        }
+
+
+        /* Action Button Styles */
+        .action-button {
+            color: var(--action-button-text); font-weight: 700; padding: 0.8rem 1.8rem; border-radius: 1rem; border: 3px solid var(--action-button-border); box-shadow: 5px 5px 0px var(--action-button-shadow); transition: all 0.15s ease-out; cursor: pointer; display: inline-flex; align-items: center; justify-content: center; gap: 0.5rem; text-transform: uppercase; letter-spacing: 0.05em; font-size: 1rem; min-width: 120px; transform-style: preserve-3d;
+        }
+        .action-button:hover:not(:disabled) { box-shadow: 6px 6px 0px var(--action-button-hover-shadow); transform: translateY(-3px) translateX(-2px) translateZ(5px); }
+        .action-button:active:not(:disabled) { box-shadow: 2px 2px 0px var(--action-button-active-shadow); transform: translateY(2px) translateX(2px) translateZ(0px); }
+        .action-button:focus { outline: none; box-shadow: 5px 5px 0px var(--action-button-shadow), 0 0 0 3px var(--bg-color), 0 0 0 5px var(--focus-ring-color); }
+        .action-button:disabled { opacity: 0.6; cursor: not-allowed; box-shadow: 5px 5px 0px var(--action-button-shadow); transform: none; }
+
+        #submitBtn { background-color: var(--submit-button-bg); border-color: var(--action-button-border); box-shadow: 5px 5px 0px var(--action-button-shadow); --focus-ring-color: var(--submit-button-bg); }
+        #submitBtn:hover:not(:disabled) { background-color: var(--submit-button-hover-bg); box-shadow: 6px 6px 0px var(--action-button-hover-shadow); }
+        #submitBtn:active:not(:disabled) { background-color: var(--submit-button-active-bg); box-shadow: 2px 2px 0px var(--action-button-active-shadow); }
+
+        #nextBtn { background-color: var(--next-button-bg); border-color: var(--action-button-border); box-shadow: 5px 5px 0px var(--action-button-shadow); --focus-ring-color: var(--next-button-bg); }
+        #nextBtn:hover:not(:disabled) { background-color: var(--next-button-hover-bg); box-shadow: 6px 6px 0px var(--action-button-hover-shadow); }
+        #nextBtn:active:not(:disabled) { background-color: var(--next-button-active-bg); box-shadow: 2px 2px 0px var(--action-button-active-shadow); }
+
+        #resetBtn { background-color: var(--reset-button-bg); border-color: var(--action-button-border); box-shadow: 5px 5px 0px var(--action-button-shadow); --focus-ring-color: var(--reset-button-bg); }
+        #resetBtn:hover { background-color: var(--reset-button-hover-bg); box-shadow: 6px 6px 0px var(--action-button-hover-shadow); }
+        #resetBtn:active { background-color: var(--reset-button-active-bg); box-shadow: 2px 2px 0px var(--action-button-active-shadow); }
+
+
+        /* Result Area Styles */
+        #resultArea {
+            background-color: var(--result-area-bg); border: 2px dashed var(--result-area-border); border-radius: 16px; box-shadow: 4px 4px 0px var(--result-area-shadow); padding: 1.5rem; margin-top: 2rem; min-height: 150px; text-align: center; transition: opacity 0.5s ease-in-out, transform 0.5s ease-in-out, background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease; opacity: 0; transform: scale(0.9) rotate(-2deg); display: flex; flex-direction: column; align-items: center; justify-content: center;
+        }
+        #resultArea.visible { opacity: 1; transform: scale(1) rotate(0deg); animation: reveal 0.6s cubic-bezier(0.68, -0.55, 0.27, 1.55) forwards; }
+        #feedbackText { font-size: 1.3rem; font-weight: 700; margin-bottom: 1rem; transition: color 0.3s ease; line-height: 1.4; }
+        #feedbackText.correct { color: var(--correct-text-color); }
+        #feedbackText.incorrect { color: var(--incorrect-text-color); }
+        #explanationText { font-size: 1rem; font-weight: 500; margin-top: 0.5rem; color: var(--explanation-text-color); background-color: rgba(0, 0, 0, 0.05); padding: 0.75rem 1rem; border-radius: 8px; max-width: 90%; }
+        #thinkingText { font-style: italic; color: var(--thinking-text-color); transition: color 0.3s ease; font-size: 1.1rem; margin-bottom: 1rem; }
+
+        /* Headings & Labels */
+        .main-heading { color: var(--heading-color); transition: color 0.3s ease; padding-top: 1rem; /* Default padding */ }
+        .sub-heading { color: var(--subheading-color); transition: color 0.3s ease; font-size: 1.1rem; line-height: 1.6; margin-bottom: 1.5rem; }
+
+        /* Footer Styling */
+        .page-footer { text-align: center; padding: 1rem 0; margin-top: 1rem; font-size: 0.8rem; color: var(--footer-text-color); flex-shrink: 0; line-height: 1.5; transition: color 0.3s ease; }
+        .page-footer p { margin-bottom: 0.25rem; }
+
+        /* Theme Selector Styles */
+        .theme-selector-container { position: absolute; top: 1rem; right: 1rem; z-index: 10; }
+        .theme-selector-label { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; border-width: 0; }
+        #themeSelector { padding: 0.4rem 0.8rem; border-radius: 8px; border: 2px solid var(--theme-selector-border); background-color: var(--theme-selector-bg); color: var(--theme-selector-text); font-weight: 500; cursor: pointer; box-shadow: 2px 2px 0px var(--theme-selector-border); transition: all 0.2s ease; vertical-align: middle; font-size: 0.8rem; }
+        #themeSelector:focus { outline: none; box-shadow: 2px 2px 0px var(--theme-selector-border), 0 0 0 3px var(--main-container-bg), 0 0 0 5px var(--theme-selector-border); }
+
+        /* Dark Theme Adjustments */
+        body[data-theme="cosmic-purple"] .main-heading svg,
+        body[data-theme="night-mode"] .main-heading svg { color: #F687B3; /* pink-400 */ }
+        body[data-theme="cosmic-purple"] .sub-heading,
+        body[data-theme="night-mode"] .sub-heading { color: #D1D5DB; }
+        body[data-theme="cosmic-purple"] #themeSelector:focus,
+        body[data-theme="night-mode"] #themeSelector:focus { box-shadow: 2px 2px 0px var(--theme-selector-border), 0 0 0 3px var(--main-container-bg), 0 0 0 5px var(--theme-selector-border); }
+        body[data-theme="cosmic-purple"] #explanationText,
+        body[data-theme="night-mode"] #explanationText { background-color: rgba(0, 0, 0, 0.2); color: #E5E7EB; }
+        body[data-theme="night-mode"] #puzzleSentence .highlight { background-color: color-mix(in srgb, var(--highlight-color) 25%, transparent); }
+        body[data-theme="night-mode"] #answerInput { background-color: #4B5563; color: #F9FAFB; }
+
+
+        /* Hide class utility */
+        .hidden { display: none; }
+
+        /* Animation for result reveal */
+        @keyframes reveal { from { transform: scale(0.8) rotate(-5deg); opacity: 0; } to { transform: scale(1) rotate(0deg); opacity: 1; } }
+
+    </style>
+</head>
+<body class="p-4 md:p-6">
+
+    <div class="theme-selector-container">
+        <label for="themeSelector" class="theme-selector-label">Choose a Theme:</label>
+        <select id="themeSelector">
+            <option value="default">🎨 Default</option>
+            <option value="ocean-blue">🌊 Ocean Blue</option>
+            <option value="forest-green">🌲 Forest Green</option>
+            <option value="cosmic-purple">✨ Cosmic Purple</option>
+            <option value="sunny-yellow">☀️ Sunny Yellow</option>
+            <option value="candy-pink">🍬 Candy Pink</option>
+            <option value="night-mode">🌙 Night Mode</option>
+        </select>
+    </div>
+
+    <main>
+        <div class="main-container">
+            <h1 class="main-heading text-3xl sm:text-4xl font-bold text-center mb-4 tracking-tight flex items-center justify-center gap-3">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-9 h-9 text-orange-700">
+                   <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 5.25a3 3 0 013 3m3 0a6 6 0 01-7.029 5.912c-.563-.097-1.159.026-1.563.43L10.5 17.25H8.25v2.25H6v2.25H2.25v-2.818c0-.597.237-1.17.659-1.591l6.499-6.499c.404-.404.527-1 .43-1.563A6 6 0 1121.75 8.25z" />
+                 </svg>
+                 Synonym Decoder Test <span class="text-2xl">🧐</span>
+            </h1>
+
+            <p class="sub-heading text-center mb-8">One word in the sentence below has been replaced by an odd synonym. Can you figure out the *original* word?</p>
+
+            <div id="puzzleArea">
+                <div class="puzzle-card">
+                    <p id="puzzleSentence">Sentence with the <span class="highlight">peculiar</span> word goes here.</p>
+                    <div class="mt-6">
+                        <label for="answerInput" class="label-color font-semibold mb-2 block">Your Guess (Original Word):</label>
+                        <input type="text" id="answerInput" placeholder="Type the original word..." class="block">
+                    </div>
+                    <button id="submitBtn" class="action-button submit-button mt-6" disabled>Decode! 🔓</button>
+                </div>
+            </div>
+
+            <div id="resultArea" class="hidden">
+                <p id="thinkingText">...</p>
+                <p id="feedbackText"></p>
+                <p id="explanationText" class="hidden"></p>
+                <div class="mt-6 flex flex-col sm:flex-row justify-center gap-4">
+                    <button id="nextBtn" class="action-button next-button hidden">Next Puzzle 👉</button>
+                    <button id="resetBtn" class="action-button reset-button hidden">Try Another? 🔁</button>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="page-footer">
+        <p>© 2025 ToolForge. All rights reserved.</p>
+        <p>Built with ❤️ by Anas.</p>
+    </footer>
+
+    <script>
+        // --- DOM Elements ---
+        const puzzleAreaDiv = document.getElementById('puzzleArea');
+        const puzzleSentence = document.getElementById('puzzleSentence');
+        const answerInput = document.getElementById('answerInput');
+        const submitBtn = document.getElementById('submitBtn');
+        const resultArea = document.getElementById('resultArea');
+        const thinkingText = document.getElementById('thinkingText');
+        const feedbackText = document.getElementById('feedbackText');
+        const explanationText = document.getElementById('explanationText');
+        const nextBtn = document.getElementById('nextBtn');
+        const resetBtn = document.getElementById('resetBtn');
+        const themeSelector = document.getElementById('themeSelector');
+
+        // --- Game State ---
+        let currentPuzzleIndex = 0;
+        let currentPuzzle; // Holds the current puzzle object
+        let score = 0; // Optional
+
+        // --- Puzzle Data (Expanded to 50+) ---
+        const puzzles = [
+            { oddSynonym: "pulchritudinous", originalWord: "beautiful", sentenceTemplate: "The sunset over the ocean was truly {word}." },
+            { oddSynonym: "expeditiously", originalWord: "quickly", sentenceTemplate: "She finished her homework {word} so she could play." },
+            { oddSynonym: "gargantuan", originalWord: "large", sentenceTemplate: "They saw a {word} whale breaching near the boat." },
+            { oddSynonym: "diminutive", originalWord: "small", sentenceTemplate: "The mouse found a {word} crumb on the floor." },
+            { oddSynonym: "ebullient", originalWord: "happy", sentenceTemplate: "He was {word} after receiving the good news." },
+            { oddSynonym: "lugubrious", originalWord: "sad", sentenceTemplate: "The rainy weather made her feel quite {word}." },
+            { oddSynonym: "vociferous", originalWord: "loud", sentenceTemplate: "The crowd let out a {word} cheer for the team." },
+            { oddSynonym: "taciturn", originalWord: "quiet", sentenceTemplate: "The librarian preferred the library to be {word}." },
+            { oddSynonym: "perambulate", originalWord: "walk", sentenceTemplate: "Let's {word} through the park this afternoon." },
+            { oddSynonym: "cogitate", originalWord: "think", sentenceTemplate: "He needed time to {word} about the difficult problem." },
+            { oddSynonym: "deleterious", originalWord: "harmful", sentenceTemplate: "Eating too much candy can be {word} to your teeth." },
+            { oddSynonym: "salubrious", originalWord: "healthy", sentenceTemplate: "Fresh air and exercise are quite {word}." },
+            { oddSynonym: "commence", originalWord: "start", sentenceTemplate: "The race will {word} in five minutes." },
+            { oddSynonym: "terminate", originalWord: "end", sentenceTemplate: "The movie will {word} soon." },
+            { oddSynonym: "fabricate", originalWord: "make", sentenceTemplate: "He decided to {word} a story to explain his lateness." },
+            { oddSynonym: "veracity", originalWord: "truth", sentenceTemplate: "The witness questioned the {word} of the statement." },
+            { oddSynonym: "obfuscate", originalWord: "confuse", sentenceTemplate: "The complex jargon seemed designed to {word} the issue." },
+            { oddSynonym: "elucidate", originalWord: "explain", sentenceTemplate: "Could you please {word} that concept further?" },
+            { oddSynonym: "ameliorate", originalWord: "improve", sentenceTemplate: "They hoped the new policy would {word} the situation." },
+            { oddSynonym: "exacerbate", originalWord: "worsen", sentenceTemplate: "Pouring water on the grease fire will only {word} it." },
+            { oddSynonym: "propinquity", originalWord: "nearness", sentenceTemplate: "Their close {word} often led to collaboration." },
+            { oddSynonym: "antediluvian", originalWord: "old", sentenceTemplate: "The museum displayed {word} artifacts." },
+            { oddSynonym: "ephemeral", originalWord: "short-lived", sentenceTemplate: "The beauty of the cherry blossoms is {word}." },
+            { oddSynonym: "ubiquitous", originalWord: "everywhere", sentenceTemplate: "Smartphones have become {word} in modern society." },
+            { oddSynonym: "perspicacious", originalWord: "wise", sentenceTemplate: "Her {word} advice helped solve the problem." },
+            { oddSynonym: "convivial", originalWord: "friendly", sentenceTemplate: "It was a very {word} gathering of neighbors." },
+            { oddSynonym: "juxtaposition", originalWord: "contrast", sentenceTemplate: "The artwork highlighted the {word} between light and shadow." },
+            { oddSynonym: "loquacious", originalWord: "talkative", sentenceTemplate: "The {word} parrot entertained the visitors." },
+            { oddSynonym: "soporific", originalWord: "sleepy", sentenceTemplate: "The lecturer's monotone voice had a {word} effect." },
+            { oddSynonym: "incandescent", originalWord: "bright", sentenceTemplate: "The filament glowed with an {word} light." },
+            { oddSynonym: "insipid", originalWord: "dull", sentenceTemplate: "The conversation became rather {word} after a while." },
+            { oddSynonym: "sagacious", originalWord: "clever", sentenceTemplate: "The owl is often seen as a {word} bird." },
+            { oddSynonym: "nefarious", originalWord: "wicked", sentenceTemplate: "The villain hatched a {word} plot." },
+            { oddSynonym: "alacrity", originalWord: "speed", sentenceTemplate: "She accepted the challenge with {word}." },
+            { oddSynonym: "mendacious", originalWord: "lying", sentenceTemplate: "His {word} claims were quickly disproven." },
+            { oddSynonym: "corpulent", originalWord: "fat", sentenceTemplate: "The cartoon depicted a rather {word} king." },
+            { oddSynonym: "esoteric", originalWord: "obscure", sentenceTemplate: "He enjoyed discussing {word} philosophical topics." },
+            { oddSynonym: "gregarious", originalWord: "sociable", sentenceTemplate: "Dolphins are known to be very {word} animals." },
+            { oddSynonym: "ignominious", originalWord: "shameful", sentenceTemplate: "The team suffered an {word} defeat." },
+            { oddSynonym: "lachrymose", originalWord: "tearful", sentenceTemplate: "The ending of the movie was quite {word}." },
+            { oddSynonym: "magnanimous", originalWord: "generous", sentenceTemplate: "He was {word} in victory, praising his opponent." },
+            { oddSynonym: "onerous", originalWord: "difficult", sentenceTemplate: "Moving the heavy furniture was an {word} task." },
+            { oddSynonym: "paucity", originalWord: "lack", sentenceTemplate: "There was a {word} of evidence to support his claim." },
+            { oddSynonym: "querulous", originalWord: "complaining", sentenceTemplate: "His {word} tone annoyed everyone in the room." },
+            { oddSynonym: "reticent", originalWord: "shy", sentenceTemplate: "She was {word} about sharing her personal opinions." },
+            { oddSynonym: "serendipity", originalWord: "luck", sentenceTemplate: "Finding that rare book was pure {word}." },
+            { oddSynonym: "truculent", originalWord: "aggressive", sentenceTemplate: "His {word} behavior often led to arguments." },
+            { oddSynonym: "umbrage", originalWord: "offense", sentenceTemplate: "She took {word} at his dismissive comment." },
+            { oddSynonym: "vicissitude", originalWord: "change", sentenceTemplate: "They faced the many {word}s of life together." },
+            { oddSynonym: "winsome", originalWord: "charming", sentenceTemplate: "The child had a {word} smile." },
+             { oddSynonym: "zenith", originalWord: "peak", sentenceTemplate: "The sun reached its {word} at noon." },
+             { oddSynonym: "aberration", originalWord: "anomaly", sentenceTemplate: "The strange result was considered an {word}." },
+             { oddSynonym: "capitulate", originalWord: "surrender", sentenceTemplate: "Facing overwhelming odds, the general decided to {word}." },
+             { oddSynonym: "diaphanous", originalWord: "sheer", sentenceTemplate: "The curtains were made of a {word} material." },
+             { oddSynonym: "epistolary", originalWord: "letter-based", sentenceTemplate: "The novel was written in an {word} format." },
+             { oddSynonym: "fastidious", originalWord: "picky", sentenceTemplate: "He was very {word} about the cleanliness of his kitchen." }
+
+        ];
+
+        // --- Functions ---
+
+        /** Shuffles array in place. Fisher-Yates algorithm. */
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+        }
+
+        /** Selects and displays a random puzzle */
+        function displayRandomPuzzle() {
+            shuffleArray(puzzles);
+            currentPuzzleIndex = 0;
+            displayPuzzle(currentPuzzleIndex);
+        }
+
+        /** Displays the puzzle at the given index */
+        function displayPuzzle(index) {
+            if (index >= puzzles.length) {
+                showFinalMessage();
+                return;
+            }
+            currentPuzzle = puzzles[index];
+
+            // Format the sentence with the highlighted odd synonym
+            const sentenceHTML = currentPuzzle.sentenceTemplate.replace(
+                "{word}",
+                `<span class="highlight">${currentPuzzle.oddSynonym}</span>`
+            );
+            puzzleSentence.innerHTML = sentenceHTML; // Use innerHTML to render the span
+
+            answerInput.value = '';
+            answerInput.disabled = false;
+            submitBtn.disabled = true;
+
+            puzzleAreaDiv.classList.remove('hidden');
+            resultArea.classList.add('hidden');
+            resultArea.classList.remove('visible');
+            nextBtn.classList.add('hidden');
+            resetBtn.classList.add('hidden');
+        }
+
+        /** Handles input in the answer field to enable/disable submit */
+        function handleInputChange() {
+            submitBtn.disabled = answerInput.value.trim() === '';
+        }
+
+        /** Checks the submitted answer */
+        function checkAnswer() {
+            const userAnswer = answerInput.value.trim();
+            if (userAnswer === '') return;
+
+            const correctAnswer = currentPuzzle.originalWord;
+            const isCorrect = userAnswer.toLowerCase() === correctAnswer.toLowerCase();
+
+            answerInput.disabled = true;
+            submitBtn.disabled = true;
+
+            puzzleAreaDiv.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+            thinkingText.style.display = 'none';
+            explanationText.classList.add('hidden');
+            resultArea.classList.remove('visible');
+
+            if (isCorrect) {
+                feedbackText.textContent = "Correct! You decoded the synonym! 🎉";
+                feedbackText.className = 'correct';
+                // Optionally show explanation even if correct
+                explanationText.textContent = `💡 Original Word: "${currentPuzzle.originalWord}"`;
+                explanationText.classList.remove('hidden');
+                score++; // Optional scoring
+            } else {
+                feedbackText.textContent = "Not quite! That wasn't the original word... 🤔";
+                feedbackText.className = 'incorrect';
+                explanationText.textContent = `💡 The original word was: "${currentPuzzle.originalWord}". The sentence used "${currentPuzzle.oddSynonym}".`;
+                explanationText.classList.remove('hidden');
+            }
+
+            if (currentPuzzleIndex < puzzles.length - 1) {
+                nextBtn.classList.remove('hidden');
+            } else {
+                 resetBtn.textContent = "Play Again? 🔁";
+                 resetBtn.classList.remove('hidden');
+            }
+
+            resultArea.classList.add('visible');
+        }
+
+        /** Loads the next puzzle */
+        function loadNextPuzzle() {
+            currentPuzzleIndex++;
+            displayPuzzle(currentPuzzleIndex);
+        }
+
+        /** Shows a final message */
+         function showFinalMessage() {
+            puzzleAreaDiv.classList.add('hidden');
+            resultArea.classList.remove('hidden');
+            thinkingText.style.display = 'none';
+            feedbackText.textContent = `🎉 You've decoded all the synonyms! Well done, Word Sleuth! 🎉`; // Add score if tracked: Final Score: ${score}/${puzzles.length}
+            feedbackText.className = '';
+            explanationText.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            resetBtn.textContent = "Restart Series? 🔁";
+            resetBtn.classList.remove('hidden');
+            resultArea.classList.add('visible');
+         }
+
+        /** Resets the game */
+        function resetGame() {
+            score = 0; // Reset score if tracking
+            displayRandomPuzzle(); // Start with a new random first puzzle
+        }
+
+        // --- Theme Switching Logic (With localStorage) ---
+        function applyTheme(themeName) {
+            document.body.dataset.theme = themeName;
+            try { localStorage.setItem('synonymDecoderTheme', themeName); }
+            catch (e) { console.warn("Could not save theme preference:", e); }
+        }
+
+        function loadSavedTheme() {
+            let savedTheme = 'default';
+            try { savedTheme = localStorage.getItem('synonymDecoderTheme') || 'default'; }
+            catch (e) { console.warn("Could not load theme preference:", e); }
+            themeSelector.value = savedTheme;
+            applyTheme(savedTheme);
+        }
+
+        themeSelector.addEventListener('change', (event) => applyTheme(event.target.value));
+
+        // --- Event Listeners ---
+        answerInput.addEventListener('input', handleInputChange);
+        answerInput.addEventListener('keypress', function(event) {
+            if (event.key === 'Enter' && !submitBtn.disabled) {
+                checkAnswer();
+            }
+        });
+        submitBtn.addEventListener('click', checkAnswer);
+        nextBtn.addEventListener('click', loadNextPuzzle);
+        resetBtn.addEventListener('click', resetGame);
+
+        // --- Initial Load ---
+        loadSavedTheme();
+        resetGame(); // Initialize game state and display first puzzle
+
+    </script>
+
+</body>
+</html>
